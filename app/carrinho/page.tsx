@@ -7,9 +7,11 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react"
 import { useCart } from "@/hooks/use-cart"
+import { useRouter } from "next/navigation"
 
 export default function CarrinhoPage() {
   const { items, total, updateQuantity, removeItem, clearCart } = useCart()
+  const router = useRouter()
 
   const shippingCost = total > 299 ? 0 : 29.9
   const finalTotal = total + shippingCost
@@ -143,9 +145,7 @@ export default function CarrinhoPage() {
             </div>
 
             <div className="space-y-3">
-              <Button className="w-full" size="lg">
-                Finalizar Compra
-              </Button>
+              <Button className="w-full" size="lg" onClick={() => router.push("/checkout")}>Finalizar Compra</Button>
               <div className="text-center text-xs text-gray-500">
                 ou 12x de R$ {(finalTotal / 12).toFixed(2).replace(".", ",")} sem juros
               </div>

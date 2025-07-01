@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { Star, Heart, Share2, Truck, Shield, RotateCcw } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
+import { useFavorites } from "@/hooks/use-favorites";
+import { useRouter } from "next/navigation";
 
 interface ProductInfoProps {
   product: {
@@ -24,10 +26,12 @@ interface ProductInfoProps {
     reviews: number;
     stock: number;
     sku: string;
+    stockQuantity: number;
   };
 }
 
 export default function ProductInfo({ product }: ProductInfoProps) {
+  const stock = Number(product.stockQuantity) || 0;
   const [selectedColor, setSelectedColor] = useState(
     product.colors[0]?.id || ""
   );
@@ -35,6 +39,8 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
   const { toast } = useToast();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const router = useRouter();
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -56,13 +62,36 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       image: "/placeholder.svg?height=300&width=300",
       size: selectedSize,
       color: selectedColorObj?.name || "",
-      quantity,
+      quantity: Number(quantity) || 1,
     });
 
     toast({
       title: "Produto adicionado!",
       description: `${product.name} foi adicionado ao seu carrinho.`,
     });
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    router.push("/carrinho");
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: "Link copiado!",
+        description:
+          "O link do produto foi copiado para a área de transferência.",
+      });
+    } catch (e) {
+      toast({
+        title: "Erro ao copiar link",
+        description: "Não foi possível copiar o link.",
+        variant: "destructive",
+      });
+    }
   };
 
   const discount = product.originalPrice
@@ -115,13 +144,33 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm">
-            <Heart className="h-4 w-4 mr-1" />
-            Favoritar
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              toggleFavorite({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: "/placeholder.svg?height=300&width=300",
+                brand: product.brand,
+                category: product.category,
+              })
+            }
+            aria-label={
+              isFavorite(product.id)
+                ? "Remover dos favoritos"
+                : "Adicionar aos favoritos"
+            }
+          >
+            <Heart
+              className={`h-4 w-4 mr-1 ${
+                isFavorite(product.id) ? "text-red-500 fill-red-500" : ""
+              }`}
+            />
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={handleShare}>
             <Share2 className="h-4 w-4 mr-1" />
-            Compartilhar
           </Button>
         </div>
       </div>
@@ -221,25 +270,29 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              onClick={() =>
+                setQuantity((q) => Math.max(1, Number(q) - 1 || 1))
+              }
               disabled={quantity <= 1}
             >
               -
             </Button>
             <span className="px-4 py-2 min-w-[3rem] text-center">
-              {quantity}
+              {quantity || 1}
             </span>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-              disabled={quantity >= product.stock}
+              onClick={() =>
+                setQuantity((q) => Math.min(stock, Number(q) + 1 || 1))
+              }
+              disabled={quantity >= stock}
             >
               +
             </Button>
           </div>
           <span className="text-sm text-gray-500">
-            {product.stock} unidades disponíveis
+            {stock} unidades disponíveis
           </span>
         </div>
       </div>
@@ -250,7 +303,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           Adicionar ao Carrinho - R${" "}
           {(product.price * quantity).toFixed(2).replace(".", ",")}
         </Button>
-        <Button variant="outline" size="lg" className="w-full">
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full"
+          onClick={handleBuyNow}
+        >
           Comprar Agora
         </Button>
       </div>
