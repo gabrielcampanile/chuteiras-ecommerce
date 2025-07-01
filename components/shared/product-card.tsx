@@ -71,29 +71,18 @@ export default function ProductCard({
 
   const handleShare = async () => {
     const url = `${window.location.origin}/produto/${product.id}`;
-    const text = `Confira esta chuteira: ${product.name}`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: product.name,
-          text: text,
-          url: url,
-        });
-      } catch (error) {
-        await navigator.clipboard.writeText(`${text} - ${url}`);
-        toast({
-          title: "Link copiado!",
-          description:
-            "O link do produto foi copiado para a área de transferência.",
-        });
-      }
-    } else {
-      await navigator.clipboard.writeText(`${text} - ${url}`);
+    try {
+      await navigator.clipboard.writeText(url);
       toast({
         title: "Link copiado!",
         description:
           "O link do produto foi copiado para a área de transferência.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao copiar link",
+        description: "Não foi possível copiar o link.",
+        variant: "destructive",
       });
     }
   };
@@ -128,13 +117,10 @@ export default function ProductCard({
             <Heart
               className={`h-4 w-4 ${
                 isFavorite(product.id)
-                  ? "text-red-500 fill-current"
+                  ? "text-red-500 fill-red-500"
                   : "text-gray-600"
               }`}
             />
-            {isFavorite(product.id) && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-            )}
           </button>
           <button
             onClick={handleShare}
