@@ -1,63 +1,28 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Star, Sparkles } from "lucide-react"
+"use client";
 
-const newProducts = [
-  {
-    id: 4,
-    name: "Mizuno Morelia Neo IV Beta Japan",
-    brand: "Mizuno",
-    category: "Campo",
-    price: 1299.9,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.9,
-    reviews: 67,
-    launchDate: "2024-01-15",
-    description: "A evolução da lendária linha Morelia com tecnologia japonesa de ponta.",
-  },
-  {
-    id: 7,
-    name: "Nike Mercurial Superfly 9 Elite FG",
-    brand: "Nike",
-    category: "Campo",
-    price: 1199.9,
-    originalPrice: 1499.9,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.9,
-    reviews: 98,
-    launchDate: "2024-01-10",
-    description: "A chuteira mais rápida da Nike com tecnologia revolucionária.",
-  },
-  {
-    id: 9,
-    name: "Adidas X Crazyfast Elite FG",
-    brand: "Adidas",
-    category: "Campo",
-    price: 1099.9,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.8,
-    reviews: 45,
-    launchDate: "2024-01-20",
-    description: "Velocidade extrema com o novo design aerodinâmico da Adidas.",
-  },
-  {
-    id: 10,
-    name: "Puma Ultra Ultimate FG/AG",
-    brand: "Puma",
-    category: "Campo",
-    price: 899.9,
-    originalPrice: 1199.9,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.7,
-    reviews: 112,
-    launchDate: "2024-01-05",
-    description: "Ultra leve e ultra rápida para máxima performance.",
-  },
-]
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Star, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Product } from "@/types/product";
+import { ProductService } from "@/lib/services/productService";
 
 export default function LancamentosPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchNewProducts() {
+      setLoading(true);
+      const prods = await ProductService.getNewProducts(8);
+      setProducts(prods);
+      setLoading(false);
+    }
+    fetchNewProducts();
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
@@ -68,7 +33,8 @@ export default function LancamentosPage() {
             <h1 className="text-4xl font-bold">Lançamentos</h1>
           </div>
           <p className="text-xl mb-6">
-            Seja o primeiro a ter as chuteiras mais inovadoras do mercado. Tecnologia de ponta para elevar seu jogo.
+            Seja o primeiro a ter as chuteiras mais inovadoras do mercado.
+            Tecnologia de ponta para elevar seu jogo.
           </p>
           <div className="flex items-center gap-4 text-purple-100">
             <span>✨ Tecnologias exclusivas</span>
@@ -81,8 +47,11 @@ export default function LancamentosPage() {
       {/* New Arrivals */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-6">Novidades da Semana</h2>
+        {loading ? (
+          <div className="text-center py-12">Carregando lançamentos...</div>
+        ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {newProducts.map((product) => (
+            {products.map((product) => (
             <div
               key={product.id}
               className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow group border"
@@ -96,7 +65,7 @@ export default function LancamentosPage() {
                 <Link href={`/produto/${product.id}`}>
                   <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
                     <Image
-                      src={product.image || "/placeholder.svg"}
+                        src={product.images?.[0] || "/placeholder.svg"}
                       alt={product.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -109,7 +78,9 @@ export default function LancamentosPage() {
                     <Badge variant="outline" className="text-xs">
                       {product.category}
                     </Badge>
-                    <span className="text-xs text-gray-500">{product.brand}</span>
+                      <span className="text-xs text-gray-500">
+                        {product.brand}
+                      </span>
                   </div>
 
                   <Link href={`/produto/${product.id}`}>
@@ -118,7 +89,9 @@ export default function LancamentosPage() {
                     </h3>
                   </Link>
 
-                  <p className="text-xs text-gray-600 line-clamp-2">{product.description}</p>
+                    <p className="text-xs text-gray-600 line-clamp-2">
+                      {product.description}
+                    </p>
 
                   <div className="flex items-center gap-1">
                     <div className="flex">
@@ -126,12 +99,16 @@ export default function LancamentosPage() {
                         <Star
                           key={i}
                           className={`h-3 w-3 ${
-                            i < Math.floor(product.rating) ? "text-yellow-400 fill-current" : "text-gray-300"
+                              i < Math.floor(product.rating || 0)
+                                ? "text-yellow-400 fill-current"
+                                : "text-gray-300"
                           }`}
                         />
                       ))}
                     </div>
-                    <span className="text-xs text-gray-500">({product.reviews})</span>
+                      <span className="text-xs text-gray-500">
+                        ({product.reviewCount || 0})
+                      </span>
                   </div>
 
                   <div className="space-y-1">
@@ -141,15 +118,21 @@ export default function LancamentosPage() {
                       </span>
                       {product.originalPrice && (
                         <span className="text-sm text-gray-500 line-through">
-                          R$ {product.originalPrice.toFixed(2).replace(".", ",")}
+                            R${" "}
+                            {product.originalPrice.toFixed(2).replace(".", ",")}
                         </span>
                       )}
                     </div>
                   </div>
 
+                    {product.createdAt && (
                   <div className="text-xs text-gray-500">
-                    Lançado em {new Date(product.launchDate).toLocaleDateString("pt-BR")}
+                        Lançado em{" "}
+                        {new Date(product.createdAt).toLocaleDateString(
+                          "pt-BR"
+                        )}
                   </div>
+                    )}
 
                   <Button className="w-full mt-4" size="sm">
                     Ver Lançamento
@@ -159,31 +142,35 @@ export default function LancamentosPage() {
             </div>
           ))}
         </div>
+        )}
       </div>
 
       {/* Coming Soon */}
       <div className="bg-gray-50 rounded-lg p-8">
         <h2 className="text-2xl font-bold mb-4">Em Breve</h2>
         <p className="text-gray-600 mb-6">
-          Fique por dentro dos próximos lançamentos e seja notificado quando chegarem.
+          Fique por dentro dos próximos lançamentos e seja notificado quando
+          chegarem.
         </p>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg">
             <h3 className="font-semibold mb-2">Nike Air Zoom Mercurial 2024</h3>
             <p className="text-sm text-gray-600 mb-4">
-              A próxima geração da linha Mercurial com tecnologia Air Zoom revolucionária.
+              A próxima geração da linha Mercurial com tecnologia Air Zoom
+              revolucionária.
             </p>
             <Badge variant="outline">Março 2024</Badge>
           </div>
           <div className="bg-white p-6 rounded-lg">
             <h3 className="font-semibold mb-2">Adidas Predator Edge 2024</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Controle absoluto da bola com a nova tecnologia de superfície adaptativa.
+              Controle absoluto da bola com a nova tecnologia de superfície
+              adaptativa.
             </p>
             <Badge variant="outline">Abril 2024</Badge>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

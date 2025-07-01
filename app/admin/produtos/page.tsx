@@ -15,6 +15,8 @@ export default function AdminProdutosPage() {
     loading: loadingProducts,
     error,
     refresh,
+    hasMore,
+    loadMore,
   } = useProducts({ createdBy: user?.uid });
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -64,40 +66,49 @@ export default function AdminProdutosPage() {
       ) : error ? (
         <div className="text-red-600">Erro: {error}</div>
       ) : (
-        <div className="space-y-4">
-          {products.length === 0 ? (
-            <div>Nenhum produto cadastrado.</div>
-          ) : (
-            products.map((product) => (
-              <div
-                key={product.id}
-                className="border rounded p-4 flex items-center justify-between"
-              >
-                <div>
-                  <div className="font-semibold">{product.name}</div>
-                  <div className="text-sm text-gray-500">
-                    R$ {product.price.toFixed(2)}
+        <>
+          <div className="space-y-4">
+            {products.length === 0 ? (
+              <div>Nenhum produto cadastrado.</div>
+            ) : (
+              products.map((product) => (
+                <div
+                  key={product.id}
+                  className="border rounded p-4 flex items-center justify-between"
+                >
+                  <div>
+                    <div className="font-semibold">{product.name}</div>
+                    <div className="text-sm text-gray-500">
+                      R$ {product.price.toFixed(2)}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Link href={`/admin/produtos/${product.id}/editar`}>
+                      <Button variant="outline" size="sm">
+                        Editar
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(product.id)}
+                      disabled={deletingId === product.id}
+                    >
+                      {deletingId === product.id ? "Deletando..." : "Deletar"}
+                    </Button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Link href={`/admin/produtos/${product.id}/editar`}>
-                    <Button variant="outline" size="sm">
-                      Editar
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(product.id)}
-                    disabled={deletingId === product.id}
-                  >
-                    {deletingId === product.id ? "Deletando..." : "Deletar"}
-                  </Button>
-                </div>
-              </div>
-            ))
+              ))
+            )}
+          </div>
+          {hasMore && (
+            <div className="flex justify-center mt-8">
+              <Button onClick={loadMore} disabled={loadingProducts}>
+                {loadingProducts ? "Carregando..." : "Carregar mais produtos"}
+              </Button>
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

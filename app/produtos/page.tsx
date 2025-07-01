@@ -39,8 +39,37 @@ function ProductsPageSkeleton() {
 }
 
 export default function ProductsPage() {
-  const { filters, setFilter, sort, setSort } = useProductFilters();
-  const { products, loading, error } = useProducts(filters, sort);
+  const { filters, setFilter, sort, setSort, clearFilters } = useProductFilters(
+    []
+  );
+
+  const sortMap: Record<
+    string,
+    {
+      field: "price" | "name" | "rating" | "createdAt" | "popularity";
+      direction: "asc" | "desc";
+    }
+  > = {
+    "price-asc": { field: "price", direction: "asc" },
+    "price-desc": { field: "price", direction: "desc" },
+    "name-asc": { field: "name", direction: "asc" },
+    "name-desc": { field: "name", direction: "desc" },
+    rating: { field: "rating", direction: "desc" },
+    newest: { field: "createdAt", direction: "desc" },
+    relevance: { field: "createdAt", direction: "desc" },
+  };
+  const sortObj = sortMap[sort] || sortMap["relevance"];
+
+  // Adaptar priceRange para o formato esperado pelo serviço
+  const adaptedFilters = {
+    ...filters,
+    priceRange: { min: filters.priceRange[0], max: filters.priceRange[1] },
+  };
+
+  const { products, loading, error, hasMore, loadMore } = useProducts(
+    adaptedFilters,
+    sortObj
+  );
 
   const getPageTitle = () => {
     if (filters.search) return `Resultados para "${filters.search}"`;
@@ -106,7 +135,7 @@ export default function ProductsPage() {
               <ProductFilters
                 filters={filters}
                 onFilterChange={setFilter}
-                onClearFilters={() => setFilter("clear", null)}
+                onClearFilters={clearFilters}
                 hasActiveFilters={false}
               />
             </div>
@@ -127,14 +156,14 @@ export default function ProductsPage() {
                   <ProductFilters
                     filters={filters}
                     onFilterChange={setFilter}
-                    onClearFilters={() => setFilter("clear", null)}
+                    onClearFilters={clearFilters}
                     hasActiveFilters={false}
                   />
                 </SheetContent>
               </Sheet>
 
               {/* Sort */}
-              <ProductSort sort={sort} setSort={setSort} />
+              <ProductSort value={sort} onValueChange={setSort} />
             </div>
 
             {/* Products Grid */}
@@ -143,7 +172,16 @@ export default function ProductsPage() {
             ) : error ? (
               <div className="text-red-600">Erro: {error}</div>
             ) : (
-              <ProductGrid products={products} />
+              <>
+                <ProductGrid products={products} />
+                {hasMore && (
+                  <div className="flex justify-center mt-8">
+                    <Button onClick={loadMore} disabled={loading}>
+                      {loading ? "Carregando..." : "Carregar mais produtos"}
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </main>
         </div>
