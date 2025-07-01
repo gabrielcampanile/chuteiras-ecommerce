@@ -18,11 +18,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import CartSidebar from "@/components/cart/cart-sidebar";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { favorites } = useFavorites();
+  const { user, userProfile, logout, loading } = useAuth();
 
   const categories = [
     { name: "Futsal", href: "/produtos?categoria=futsal" },
@@ -56,12 +58,12 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       {/* Top Bar */}
-      <div className="bg-primary text-primary-foreground py-2">
+      {/*<div className="bg-primary text-primary-foreground py-2">
         <div className="container mx-auto px-4 text-center text-sm">
           🚚 Frete grátis para compras acima de R$ 299 | 📱 WhatsApp: (15)
           99747-0049
         </div>
-      </div>
+      </div> */}
 
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4">
@@ -120,16 +122,52 @@ export default function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/login" onClick={scrollToTop}>
-                    Entrar
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/login" onClick={scrollToTop}>
-                    Cadastrar
-                  </Link>
-                </DropdownMenuItem>
+                {user ? (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <span className="text-sm text-gray-700 mr-2">
+                        {user.email}
+                      </span>
+                    </DropdownMenuItem>
+                    {userProfile?.role === "admin" ? (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link href="/admin/produtos">Admin Produtos</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href="/admin/usuarios">Admin Usuários</Link>
+                        </DropdownMenuItem>
+                      </>
+                    ) : (
+                      <DropdownMenuItem asChild>
+                        <Link href="/minha-conta">Minha Conta</Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={logout}
+                        disabled={loading}
+                      >
+                        Sair
+                      </Button>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/login" onClick={scrollToTop}>
+                        Entrar
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/login" onClick={scrollToTop}>
+                        Cadastrar
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -190,7 +228,7 @@ export default function Header() {
       </div>
 
       {/* Navigation */}
-      <nav className="border-t hidden md:block">
+      <nav className="bg-primary text-primary-foreground border-t hidden md:block">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center space-x-8 py-3">
             <DropdownMenu>

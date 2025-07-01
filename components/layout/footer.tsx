@@ -67,7 +67,7 @@ export default function Footer() {
                   Lançamentos
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/sobre"
                   className="text-gray-400 hover:text-white transition-colors"
@@ -84,7 +84,7 @@ export default function Footer() {
                 >
                   Contato
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -119,7 +119,7 @@ export default function Footer() {
                   Campo
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/produtos?marca=nike"
                   className="text-gray-400 hover:text-white transition-colors"
@@ -136,7 +136,7 @@ export default function Footer() {
                 >
                   Adidas
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 ChuteirasPro. Todos os direitos reservados.
+              © 2025 ChuteirasPro. Todos os direitos reservados.
             </p>
           </div>
         </div>
