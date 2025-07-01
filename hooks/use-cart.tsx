@@ -154,8 +154,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return () => unsubscribe();
     } else {
       const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      try {
+      if (savedCart) {
+        try {
           const parsedCart = JSON.parse(savedCart);
           if (
             parsedCart &&
@@ -163,8 +163,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
             Array.isArray(parsedCart.items)
           ) {
             dispatch({ type: "LOAD_CART", payload: parsedCart });
-        }
-      } catch (error) {
+          }
+        } catch (error) {
           console.error("Error loading cart from localStorage:", error);
           localStorage.removeItem("cart");
         }
@@ -245,19 +245,33 @@ export function useCart() {
     context.dispatch({ type: "REMOVE_ITEM", payload: id });
   }
 
-  function updateQuantity(id: string | number, size: string, color: string, quantity: number) {
+  function updateQuantity(
+    id: string | number,
+    size: string,
+    color: string,
+    quantity: number
+  ) {
     if (!user) {
       router.push("/login");
       return;
     }
-    context.dispatch({ type: "UPDATE_QUANTITY", payload: { id, size, color, quantity } });
+    context.dispatch({
+      type: "UPDATE_QUANTITY",
+      payload: { id, size, color, quantity },
+    });
   }
 
-  function clearCart() {
+  async function clearCart() {
     if (!user) {
       router.push("/login");
       return;
     }
+    // Limpa o Firestore
+    const cartRef = collection(db, "users", user.uid, "cart");
+    const snapshot = await getDocs(cartRef);
+    const deletions = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
+    await Promise.all(deletions);
+    // Limpa o estado local
     context.dispatch({ type: "CLEAR_CART" });
   }
 

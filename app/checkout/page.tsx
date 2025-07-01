@@ -25,7 +25,7 @@ export default function CheckoutPage() {
         }
       }
       // 2. Limpar carrinho
-      clearCart();
+      await clearCart();
       // 3. Simular envio de e-mail (mock)
       await new Promise((res) => setTimeout(res, 1000));
       // 4. Exibir pop-up de agradecimento
