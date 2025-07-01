@@ -17,7 +17,7 @@ export default function RelatedProducts({
   useEffect(() => {
     async function fetchRelated() {
       setLoading(true);
-      const prods = await ProductService.getProductsByCategory(category, 8);
+      const prods = await ProductService.getProductsByCategory(category, 4);
       setProducts(prods.filter((p) => p.id !== currentProductId));
       setLoading(false);
     }

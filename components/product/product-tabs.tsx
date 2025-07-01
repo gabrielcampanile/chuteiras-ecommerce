@@ -58,7 +58,7 @@ export default function ProductTabs({
               Características Principais
             </h4>
             <ul className="space-y-2">
-              {features.map((feature, index) => (
+              {(features || []).map((feature, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
                   <span className="text-gray-600">{feature}</span>
@@ -75,7 +75,8 @@ export default function ProductTabs({
             Especificações Técnicas
           </h3>
           <div className="grid gap-4">
-            {Object.entries(specifications).map(([key, value]) => (
+            {specifications &&
+              Object.entries(specifications).map(([key, value]) => (
               <div
                 key={key}
                 className="flex justify-between py-3 border-b border-gray-200"
@@ -117,8 +118,10 @@ export default function ProductTabs({
           </div>
 
           <div className="space-y-6">
-            {productReviews.map((review) => (
-              <div key={review.id} className="border-b border-gray-200 pb-6">
+            {(productReviews || []).filter(
+              (review) => review && typeof review === 'object' && review.comment && review.name
+            ).map((review) => (
+              <div key={review.id || review._id || Math.random()} className="border-b border-gray-200 pb-6">
                 <div className="flex items-start gap-4">
                   <Avatar>
                     <AvatarImage

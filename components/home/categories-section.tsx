@@ -1,39 +1,42 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const categories = [
   {
     name: "Futsal",
     description: "Chuteiras para quadra com máxima aderência",
-    image: "/placeholder.svg?height=300&width=400",
+    image:"https://brand.assets.adidas.com/image/upload/f_auto,q_auto:best,fl_lossy/global_main_pack_1_pure_victory_football_ss25_launch_plp_statement_card_4in_d_a2aec953c6.jpg",
     href: "/produtos?categoria=futsal",
     features: ["Sola de borracha", "Máxima aderência", "Conforto superior"],
   },
   {
     name: "Society",
     description: "Perfeitas para grama sintética",
-    image: "/placeholder.svg?height=300&width=400",
+    image:"https://brand.assets.adidas.com/image/upload/f_auto,q_auto:best,fl_lossy/global_main_pack_1_pure_victory_football_ss25_launch_plp_statement_card_2tf_d_e7c204e02b.jpg",
     href: "/produtos?categoria=society",
     features: ["Travas baixas", "Estabilidade", "Durabilidade"],
   },
   {
     name: "Campo",
     description: "Para grama natural e máximo desempenho",
-    image: "/placeholder.svg?height=300&width=400",
+    image:"https://brand.assets.adidas.com/image/upload/f_auto,q_auto:best,fl_lossy/global_main_pack_1_pure_victory_football_ss25_launch_plp_statement_card_1fg_d_992232ca56.jpg",
     href: "/produtos?categoria=campo",
     features: ["Travas altas", "Tração superior", "Tecnologia avançada"],
   },
-]
+];
 
 export default function CategoriesSection() {
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Escolha sua Modalidade</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Escolha sua Modalidade
+          </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Temos chuteiras especializadas para cada tipo de jogo. Encontre a perfeita para seu estilo.
+            Temos chuteiras especializadas para cada tipo de jogo. Encontre a
+            perfeita para seu estilo.
           </p>
         </div>
 
@@ -53,14 +56,19 @@ export default function CategoriesSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-4 left-4 text-white">
                   <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
-                  <p className="text-sm text-gray-200">{category.description}</p>
+                  <p className="text-sm text-gray-200">
+                    {category.description}
+                  </p>
                 </div>
               </div>
 
               <div className="p-6">
                 <ul className="space-y-2 mb-6">
                   {category.features.map((feature, index) => (
-                    <li key={index} className="flex items-center text-sm text-gray-600">
+                    <li
+                      key={index}
+                      className="flex items-center text-sm text-gray-600"
+                    >
                       <div className="w-2 h-2 bg-primary rounded-full mr-3" />
                       {feature}
                     </li>
@@ -68,7 +76,9 @@ export default function CategoriesSection() {
                 </ul>
 
                 <Button asChild className="w-full">
-                  <Link href={category.href}>Ver Chuteiras de {category.name}</Link>
+                  <Link href={category.href}>
+                    Ver Chuteiras de {category.name}
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -76,5 +86,5 @@ export default function CategoriesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
