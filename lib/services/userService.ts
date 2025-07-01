@@ -39,4 +39,9 @@ export async function listAllUsers(): Promise<UserProfile[]> {
 export async function updateUserRole(uid: string, role: "admin" | "seller" | "customer") {
   const userRef = doc(db, USERS_COLLECTION, uid);
   await updateDoc(userRef, { role });
+}
+
+export async function updateUserProfile(uid: string, data: { name?: string; numero?: string; endereco?: string }) {
+  const userRef = doc(db, USERS_COLLECTION, uid);
+  await updateDoc(userRef, data);
 } 

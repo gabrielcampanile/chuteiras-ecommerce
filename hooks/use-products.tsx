@@ -82,8 +82,8 @@ export function useProducts(
   }, [loadProducts]);
 
   useEffect(() => {
-    loadProducts(undefined, undefined, true);
-  }, []);
+    loadProducts(initialFilters, initialSort, true);
+  }, [JSON.stringify(initialFilters), JSON.stringify(initialSort)]);
 
   return {
     products,
