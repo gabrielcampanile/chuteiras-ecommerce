@@ -1,50 +1,53 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Star, Heart, Share2, Truck, Shield, RotateCcw } from "lucide-react"
-import { useCart } from "@/hooks/use-cart"
-import { useToast } from "@/hooks/use-toast"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Star, Heart, Share2, Truck, Shield, RotateCcw } from "lucide-react";
+import { useCart } from "@/hooks/use-cart";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductInfoProps {
   product: {
-    id: number
-    name: string
-    brand: string
-    model: string
-    category: string
-    price: number
-    originalPrice?: number
-    description: string
-    colors: { id: string; name: string; hex: string }[]
-    sizes: { size: string; available: boolean }[]
-    rating: number
-    reviews: number
-    stock: number
-    sku: string
-  }
+    id: string | number;
+    name: string;
+    brand: string;
+    model: string;
+    category: string;
+    price: number;
+    originalPrice?: number;
+    description: string;
+    colors: { id: string; name: string; hex: string }[] | string[];
+    sizes: { size: string; available: boolean }[] | string[];
+    rating: number;
+    reviews: number;
+    stock: number;
+    sku: string;
+  };
 }
 
 export default function ProductInfo({ product }: ProductInfoProps) {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]?.id || "")
-  const [selectedSize, setSelectedSize] = useState("")
-  const [quantity, setQuantity] = useState(1)
-  const { addItem } = useCart()
-  const { toast } = useToast()
+  const [selectedColor, setSelectedColor] = useState(
+    product.colors[0]?.id || ""
+  );
+  const [selectedSize, setSelectedSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
+  const { toast } = useToast();
 
   const handleAddToCart = () => {
     if (!selectedSize) {
       toast({
         title: "Selecione um tamanho",
-        description: "Por favor, escolha o tamanho desejado antes de adicionar ao carrinho.",
+        description:
+          "Por favor, escolha o tamanho desejado antes de adicionar ao carrinho.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    const selectedColorObj = product.colors.find((c) => c.id === selectedColor)
+    const selectedColorObj = product.colors.find((c) => c.id === selectedColor);
 
     addItem({
       id: product.id,
@@ -54,23 +57,26 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       size: selectedSize,
       color: selectedColorObj?.name || "",
       quantity,
-    })
+    });
 
     toast({
       title: "Produto adicionado!",
       description: `${product.name} foi adicionado ao seu carrinho.`,
-    })
-  }
+    });
+  };
 
   const discount = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0
+    ? Math.round(
+        ((product.originalPrice - product.price) / product.originalPrice) * 100
+      )
+    : 0;
 
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="text-sm text-gray-500">
-        <span>Home</span> / <span>Chuteiras</span> / <span>{product.category}</span> /{" "}
+        <span>Home</span> / <span>Chuteiras</span> /{" "}
+        <span>{product.category}</span> /{" "}
         <span className="text-gray-900">{product.name}</span>
       </div>
 
@@ -92,13 +98,21 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               <Star
                 key={i}
                 className={`h-5 w-5 ${
-                  i < Math.floor(product.rating) ? "text-yellow-400 fill-current" : "text-gray-300"
+                  i < Math.floor(product.rating)
+                    ? "text-yellow-400 fill-current"
+                    : "text-gray-300"
                 }`}
               />
             ))}
           </div>
           <span className="font-medium">{product.rating}</span>
-          <span className="text-gray-500">({product.reviews} avaliações)</span>
+          <span className="text-gray-500">
+            (
+            {Array.isArray(product.reviews)
+              ? product.reviews.length
+              : product.reviews || 0}{" "}
+            avaliações)
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm">
@@ -115,7 +129,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* Price */}
       <div className="space-y-2">
         <div className="flex items-center gap-3">
-          <span className="text-3xl font-bold text-primary">R$ {product.price.toFixed(2).replace(".", ",")}</span>
+          <span className="text-3xl font-bold text-primary">
+            R$ {product.price.toFixed(2).replace(".", ",")}
+          </span>
           {product.originalPrice && (
             <>
               <span className="text-xl text-gray-500 line-through">
@@ -126,8 +142,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           )}
         </div>
         <p className="text-gray-600">
-          ou <span className="font-semibold">12x de R$ {(product.price / 12).toFixed(2).replace(".", ",")}</span> sem
-          juros
+          ou{" "}
+          <span className="font-semibold">
+            12x de R$ {(product.price / 12).toFixed(2).replace(".", ",")}
+          </span>{" "}
+          sem juros
         </p>
         <p className="text-green-600 font-medium">💳 5% de desconto no PIX</p>
       </div>
@@ -136,40 +155,61 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Color Selection */}
       <div className="space-y-3">
-        <h3 className="font-semibold">Cor: {product.colors.find((c) => c.id === selectedColor)?.name}</h3>
+        <h3 className="font-semibold">
+          Cor:{" "}
+          {Array.isArray(product.colors) &&
+          typeof product.colors[0] === "object"
+            ? product.colors.find((c: any) => c.id === selectedColor)?.name
+            : selectedColor}
+        </h3>
         <div className="flex gap-2">
-          {product.colors.map((color) => (
-            <button
-              key={color.id}
-              onClick={() => setSelectedColor(color.id)}
-              className={`w-10 h-10 rounded-full border-2 transition-all ${
-                selectedColor === color.id ? "border-primary scale-110" : "border-gray-300 hover:border-gray-400"
-              }`}
-              style={{ backgroundColor: color.hex }}
-              title={color.name}
-            />
-          ))}
+          {Array.isArray(product.colors) &&
+            product.colors.map((color: any) => (
+              <button
+                key={color.id || color}
+                onClick={() => setSelectedColor(color.id || color)}
+                className={`w-10 h-10 rounded-full border-2 transition-all ${
+                  selectedColor === (color.id || color)
+                    ? "border-primary scale-110"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+                style={{ backgroundColor: color.hex || color }}
+                title={color.name || color}
+              />
+            ))}
         </div>
       </div>
 
       {/* Size Selection */}
       <div className="space-y-3">
-        <h3 className="font-semibold">Tamanho: {selectedSize || "Selecione"}</h3>
+        <h3 className="font-semibold">
+          Tamanho: {selectedSize || "Selecione"}
+        </h3>
         <div className="grid grid-cols-4 gap-2">
-          {product.sizes.map((sizeOption) => (
-            <Button
-              key={sizeOption.size}
-              variant={selectedSize === sizeOption.size ? "default" : "outline"}
-              disabled={!sizeOption.available}
-              onClick={() => setSelectedSize(sizeOption.size)}
-              className="h-12"
-            >
-              {sizeOption.size}
-            </Button>
-          ))}
+          {Array.isArray(product.sizes) &&
+            product.sizes.map((sizeOption: any) => (
+              <Button
+                key={sizeOption.size || sizeOption}
+                variant={
+                  selectedSize === (sizeOption.size || sizeOption)
+                    ? "default"
+                    : "outline"
+                }
+                disabled={
+                  typeof sizeOption === "object" ? !sizeOption.available : false
+                }
+                onClick={() => setSelectedSize(sizeOption.size || sizeOption)}
+                className="h-12"
+              >
+                {sizeOption.size || sizeOption}
+              </Button>
+            ))}
         </div>
         <p className="text-sm text-gray-500">
-          Não sabe seu tamanho? <button className="text-primary hover:underline">Guia de tamanhos</button>
+          Não sabe seu tamanho?{" "}
+          <button className="text-primary hover:underline">
+            Guia de tamanhos
+          </button>
         </p>
       </div>
 
@@ -186,7 +226,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             >
               -
             </Button>
-            <span className="px-4 py-2 min-w-[3rem] text-center">{quantity}</span>
+            <span className="px-4 py-2 min-w-[3rem] text-center">
+              {quantity}
+            </span>
             <Button
               variant="ghost"
               size="sm"
@@ -196,14 +238,17 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               +
             </Button>
           </div>
-          <span className="text-sm text-gray-500">{product.stock} unidades disponíveis</span>
+          <span className="text-sm text-gray-500">
+            {product.stock} unidades disponíveis
+          </span>
         </div>
       </div>
 
       {/* Add to Cart */}
       <div className="space-y-3">
         <Button onClick={handleAddToCart} size="lg" className="w-full">
-          Adicionar ao Carrinho - R$ {(product.price * quantity).toFixed(2).replace(".", ",")}
+          Adicionar ao Carrinho - R${" "}
+          {(product.price * quantity).toFixed(2).replace(".", ",")}
         </Button>
         <Button variant="outline" size="lg" className="w-full">
           Comprar Agora
@@ -214,7 +259,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
         <div className="flex items-center gap-3">
           <Truck className="h-5 w-5 text-green-600" />
-          <span className="text-sm">Frete grátis para compras acima de R$ 299</span>
+          <span className="text-sm">
+            Frete grátis para compras acima de R$ 299
+          </span>
         </div>
         <div className="flex items-center gap-3">
           <RotateCcw className="h-5 w-5 text-blue-600" />
@@ -239,5 +286,5 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         </p>
       </div>
     </div>
-  )
+  );
 }

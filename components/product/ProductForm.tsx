@@ -46,29 +46,18 @@ export default function ProductForm({
     initialData.discountPercentage?.toString() || "0"
   );
   const [images, setImages] = useState<string[]>(initialData.images || []);
-  const [uploading, setUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    setUploading(true);
-    setError(null);
-    try {
-      const file = e.target.files[0];
-      const fileRef = storageRef(
-        storage,
-        `products/${Date.now()}-${file.name}`
-      );
-      await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(fileRef);
-      setImages((prev) => [...prev, url]);
-    } catch (err: any) {
-      setError("Erro ao fazer upload da imagem.");
-    } finally {
-      setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+  const handleAddImageUrl = () => {
+    if (!imageUrl.trim()) return;
+    if (!/^https?:\/\//.test(imageUrl.trim())) {
+      setError("Insira uma URL válida começando com http:// ou https://");
+      return;
     }
+    setImages((prev) => [...prev, imageUrl.trim()]);
+    setImageUrl("");
+    setError(null);
   };
 
   const handleRemoveImage = (url: string) => {
@@ -80,6 +69,10 @@ export default function ProductForm({
     setError(null);
     if (!name || !price || !category || !brand) {
       setError("Preencha todos os campos obrigatórios.");
+      return;
+    }
+    if (images.length === 0) {
+      setError("Adicione pelo menos uma URL de imagem.");
       return;
     }
     try {
@@ -231,7 +224,7 @@ export default function ProductForm({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium">Imagens</label>
+        <label className="block text-sm font-medium">Imagens (URL)</label>
         <div className="flex gap-2 flex-wrap mb-2">
           {images.map((img, i) => (
             <div key={i} className="relative group">
@@ -251,21 +244,26 @@ export default function ProductForm({
             </div>
           ))}
         </div>
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          ref={fileInputRef}
-          disabled={uploading}
-        />
-        {uploading && (
-          <div className="text-sm text-gray-500">Enviando imagem...</div>
-        )}
-        {error && uploading === false && (
-          <div className="text-red-600 text-xs mt-1">{error}</div>
-        )}
+        <div className="flex gap-2 mb-2">
+          <Input
+            type="url"
+            placeholder="Cole a URL da imagem e pressione Enter"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddImageUrl();
+              }
+            }}
+          />
+          <Button type="button" onClick={handleAddImageUrl}>
+            Adicionar
+          </Button>
+        </div>
+        {error && <div className="text-red-600 text-xs mt-1">{error}</div>}
       </div>
-      <Button type="submit" disabled={loading || uploading} className="w-full">
+      <Button type="submit" disabled={loading} className="w-full">
         {loading ? "Salvando..." : "Salvar Produto"}
       </Button>
     </form>
