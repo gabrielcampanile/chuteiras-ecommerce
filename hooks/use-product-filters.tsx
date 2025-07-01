@@ -70,32 +70,35 @@ export function useProductFilters(products: Product[]) {
     }
   }, [searchParams]);
 
-  // Stable URL update function
-  const updateURL = useCallback(
-    (newFilters: FilterState) => {
-      const params = new URLSearchParams();
+  // Stable update filter function
+  const updateFilter = useCallback((key: keyof FilterState, value: any) => {
+    setFilters((prevFilters) => ({ ...prevFilters, [key]: value }));
+  }, []);
 
-      if (newFilters.search) params.set("busca", newFilters.search);
-      if (newFilters.sort !== "relevance")
-        params.set("ordenacao", newFilters.sort);
+  // Atualizar a URL quando filters mudar (exceto na primeira renderização)
+  useEffect(() => {
+    if (!isInitializedRef.current) return;
 
-      newFilters.categories.forEach((cat) => params.append("categoria", cat));
-      newFilters.brands.forEach((brand) => params.append("marca", brand));
-      newFilters.sizes.forEach((size) => params.append("tamanho", size));
-      newFilters.colors.forEach((color) => params.append("cor", color));
+    const params = new URLSearchParams();
 
-      if (newFilters.priceRange[0] > 0)
-        params.set("precoMin", newFilters.priceRange[0].toString());
-      if (newFilters.priceRange[1] < 2000)
-        params.set("precoMax", newFilters.priceRange[1].toString());
+    if (filters.search) params.set("busca", filters.search);
+    if (filters.sort !== "relevance") params.set("ordenacao", filters.sort);
 
-      const newUrl = params.toString()
-        ? `/produtos?${params.toString()}`
-        : "/produtos";
-      router.push(newUrl, { scroll: false });
-    },
-    [router]
-  );
+    filters.categories.forEach((cat) => params.append("categoria", cat));
+    filters.brands.forEach((brand) => params.append("marca", brand));
+    filters.sizes.forEach((size) => params.append("tamanho", size));
+    filters.colors.forEach((color) => params.append("cor", color));
+
+    if (filters.priceRange[0] > 0)
+      params.set("precoMin", filters.priceRange[0].toString());
+    if (filters.priceRange[1] < 2000)
+      params.set("precoMax", filters.priceRange[1].toString());
+
+    const newUrl = params.toString()
+      ? `/produtos?${params.toString()}`
+      : "/produtos";
+    router.push(newUrl, { scroll: false });
+  }, [filters, router]);
 
   // Filter products - memoized to prevent unnecessary recalculations
   const filteredProducts = useMemo(() => {
@@ -182,32 +185,6 @@ export function useProductFilters(products: Product[]) {
     return filtered;
   }, [products, filters]);
 
-  // Stable update filter function
-  const updateFilter = useCallback(
-    (key: keyof FilterState, value: any) => {
-      setFilters((prevFilters) => {
-        const newFilters = { ...prevFilters, [key]: value };
-
-        // Clear any existing timeout
-        if (updateTimeoutRef.current) {
-          clearTimeout(updateTimeoutRef.current);
-        }
-
-        // Debounce price range updates, immediate for others
-        if (key === "priceRange") {
-          updateTimeoutRef.current = setTimeout(() => {
-            updateURL(newFilters);
-          }, 500);
-        } else {
-          updateURL(newFilters);
-        }
-
-        return newFilters;
-      });
-    },
-    [updateURL]
-  );
-
   // Clear all filters
   const clearFilters = useCallback(() => {
     const clearedFilters = {
@@ -216,8 +193,7 @@ export function useProductFilters(products: Product[]) {
       sort: filters.sort,
     };
     setFilters(clearedFilters);
-    updateURL(clearedFilters);
-  }, [filters.search, filters.sort, updateURL]);
+  }, [filters.search, filters.sort]);
 
   // Check if any filters are active
   const hasActiveFilters = useMemo(() => {
@@ -249,5 +225,8 @@ export function useProductFilters(products: Product[]) {
     isLoading,
     totalProducts: products.length,
     filteredCount: filteredProducts.length,
+    setFilter: updateFilter,
+    sort: filters.sort,
+    setSort: (value: string) => updateFilter("sort", value),
   };
 }
