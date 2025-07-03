@@ -15,8 +15,21 @@ export const metadata: Metadata = {
   title: "ChuteirasPro - Chuteiras Profissionais de Primeira Linha",
   description:
     "Loja especializada em chuteiras profissionais para futsal, society e campo. Nike, Adidas, Puma, Mizuno e muito mais.",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ChuteirasPro - Chuteiras Profissionais",
+      },
+    ],
+  },
   keywords: "chuteiras, futsal, society, campo, nike, adidas, puma, mizuno",
-  generator: "v0.dev",
+  generator: "Gabriel Belchior",
 };
 
 export default function RootLayout({

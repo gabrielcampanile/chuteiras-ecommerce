@@ -146,6 +146,12 @@ export default function Footer() {
             <p className="text-gray-400 text-sm">
               © 2025 ChuteirasPro. Todos os direitos reservados.
             </p>
+            <p className="text-gray-400 text-sm">
+              Desenvolvido por{" "}
+              <a href="https://www.campanile.dev/" className="hover:text-white">
+                Gabriel Campanile
+              </a>
+            </p>
           </div>
         </div>
       </div>
