@@ -194,7 +194,8 @@ export default function CartSidebar() {
                   onClick={() => setIsOpen(false)}
                   asChild
                 >
-                  <Link href="/carrinho">Ver Carrinho Completo</Link>
+                  {/* <Link href="/carrinho">Ver Carrinho Completo</Link> */}
+                  <Link href="/checkout">Finalizar Compra</Link>
                 </Button>
               </div>
 

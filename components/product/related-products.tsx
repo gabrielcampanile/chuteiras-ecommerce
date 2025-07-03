@@ -31,7 +31,7 @@ export default function RelatedProducts({
   return (
     <div className="mt-12">
       <h3 className="text-xl font-bold mb-4">Produtos Relacionados</h3>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

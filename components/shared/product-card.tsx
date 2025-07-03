@@ -132,7 +132,7 @@ export default function ProductCard({
 
         {/* Product Image */}
         <Link href={`/produto/${product.id}`} onClick={scrollToTop}>
-          <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
+          <div className="relative h-36 sm:h-48 mb-2 sm:mb-4 overflow-hidden rounded-lg">
             <Image
               src={
                 Array.isArray(product.images) && product.images.length > 0
@@ -148,17 +148,20 @@ export default function ProductCard({
 
         {/* Product Info */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
+          {/* <div className="my-1 flex items-center justify-between">
             <Badge variant="outline" className="text-xs">
               {product.category}
             </Badge>
             <span className="text-xs text-gray-500">{product.brand}</span>
-          </div>
+          </div> */}
 
-          <Link href={`/produto/${product.id}`} onClick={scrollToTop}>
+          <Link href={`/produto/${product.id}`} onClick={scrollToTop} className="flex items-center justify-between">
             <h3 className="font-semibold text-sm hover:text-primary transition-colors line-clamp-2">
               {product.name}
             </h3>
+            <Badge variant="outline" className="text-xs">
+              {product.category}
+            </Badge>
           </Link>
 
           {/* Rating */}
@@ -181,7 +184,7 @@ export default function ProductCard({
           </div>
 
           {/* Colors */}
-          {product.colors && product.colors.length > 0 && (
+          {/* {product.colors && product.colors.length > 0 && (
             <div className="flex items-center gap-1">
               <span className="text-xs text-gray-500">Cores:</span>
               <div className="flex gap-1">
@@ -199,40 +202,42 @@ export default function ProductCard({
                 )}
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Sizes */}
-          {product.sizes && product.sizes.length > 0 && (
+          {/* {product.sizes && product.sizes.length > 0 && (
             <div className="flex items-center gap-1">
               <span className="text-xs text-gray-500">Tamanhos:</span>
               <span className="text-xs text-gray-700">
                 {product.sizes[0]} - {product.sizes[product.sizes.length - 1]}
               </span>
             </div>
-          )}
+          )} */}
 
           {/* Price */}
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg text-primary">
-                R$ {product.price.toFixed(2).replace(".", ",")}
-              </span>
+            <div className="d-block items-center gap-2">
               {product.originalPrice && (
                 <span className="text-sm text-gray-500 line-through">
                   R$ {product.originalPrice.toFixed(2).replace(".", ",")}
                 </span>
               )}
+              <br />
+              <span className="font-bold text-lg text-primary">
+                R$ {product.price.toFixed(2).replace(".", ",")}
+              </span>
             </div>
             <p className="text-xs text-gray-500">
               ou 12x de R$ {(product.price / 12).toFixed(2).replace(".", ",")}{" "}
-              sem juros
+              {/* sem juros */}
             </p>
           </div>
 
           {/* Add to Cart Button */}
           {showAddToCart && (
             <Button onClick={handleAddToCart} className="w-full mt-4" size="sm">
-              Adicionar ao Carrinho
+              {/* Adicionar ao Carrinho */}
+              Comprar
             </Button>
           )}
         </div>

@@ -102,13 +102,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb */}
-      <div className="text-sm text-gray-500">
-        <span>Home</span> / <span>Chuteiras</span> /{" "}
-        <span>{product.category}</span> /{" "}
-        <span className="text-gray-900">{product.name}</span>
-      </div>
-
       {/* Product Title */}
       <div>
         <div className="flex items-center gap-2 mb-2">

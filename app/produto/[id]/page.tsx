@@ -27,6 +27,12 @@ export default function ProdutoPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Breadcrumb */}
+      <div className="text-sm text-gray-500 mb-4">
+        <span>Home</span> / <span>Chuteiras</span> /{" "}
+        <span>{product.category}</span> /{" "}
+        <span className="text-gray-900">{product.name}</span>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <ProductGallery images={product.images} />
         <ProductInfo product={product} />

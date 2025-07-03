@@ -1,30 +1,33 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Heart, Trash2 } from "lucide-react"
-import { useFavorites } from "@/hooks/use-favorites"
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Heart, Trash2 } from "lucide-react";
+import { useFavorites } from "@/hooks/use-favorites";
 
 export default function FavoritosPage() {
-  const { favorites, removeFromFavorites } = useFavorites()
+  const { favorites, removeFromFavorites } = useFavorites();
 
   if (favorites.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16">
         <div className="text-center max-w-md mx-auto">
           <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold mb-4">Sua lista de favoritos está vazia</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            Sua lista de favoritos está vazia
+          </h1>
           <p className="text-gray-600 mb-8">
-            Adicione produtos aos seus favoritos para acompanhar preços e disponibilidade.
+            Adicione produtos aos seus favoritos para acompanhar preços e
+            disponibilidade.
           </p>
           <Button asChild>
             <Link href="/produtos">Explorar Produtos</Link>
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -35,7 +38,7 @@ export default function FavoritosPage() {
         <Badge variant="secondary">{favorites.length} produtos</Badge>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {favorites.map((product) => (
           <div
             key={product.id}
@@ -54,7 +57,10 @@ export default function FavoritosPage() {
               <Link
                 href={`/produto/${product.id}`}
                 onClick={() => {
-                  setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100)
+                  setTimeout(
+                    () => window.scrollTo({ top: 0, behavior: "smooth" }),
+                    100
+                  );
                 }}
               >
                 <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
@@ -79,7 +85,10 @@ export default function FavoritosPage() {
                 <Link
                   href={`/produto/${product.id}`}
                   onClick={() => {
-                    setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100)
+                    setTimeout(
+                      () => window.scrollTo({ top: 0, behavior: "smooth" }),
+                      100
+                    );
                   }}
                 >
                   <h3 className="font-semibold text-sm hover:text-primary transition-colors line-clamp-2">
@@ -95,7 +104,9 @@ export default function FavoritosPage() {
                     </span>
                   </div>
                   <p className="text-xs text-gray-500">
-                    ou 12x de R$ {(product.price / 12).toFixed(2).replace(".", ",")} sem juros
+                    ou 12x de R${" "}
+                    {(product.price / 12).toFixed(2).replace(".", ",")} sem
+                    juros
                   </p>
                 </div>
 
@@ -116,5 +127,5 @@ export default function FavoritosPage() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

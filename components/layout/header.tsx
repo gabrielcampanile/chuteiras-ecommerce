@@ -200,7 +200,7 @@ export default function Header() {
                       <Link
                         key={category.name}
                         href={category.href}
-                        className="block py-2 text-sm hover:text-primary"
+                        className="block py-2 text-sm hover:text-gray-200"
                         onClick={scrollToTop}
                       >
                         {category.name}
@@ -213,7 +213,7 @@ export default function Header() {
                       <Link
                         key={brand.name}
                         href={brand.href}
-                        className="block py-2 text-sm hover:text-primary"
+                        className="block py-2 text-sm hover:text-gray-200"
                         onClick={scrollToTop}
                       >
                         {brand.name}
@@ -232,7 +232,7 @@ export default function Header() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center space-x-8 py-3">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center space-x-1 text-sm font-medium hover:text-primary">
+              <DropdownMenuTrigger className="flex items-center space-x-1 text-sm font-medium hover:text-gray-200">
                 <span>Categorias</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -247,7 +247,7 @@ export default function Header() {
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center space-x-1 text-sm font-medium hover:text-primary">
+              <DropdownMenuTrigger className="flex items-center space-x-1 text-sm font-medium hover:text-gray-200">
                 <span>Marcas</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -263,14 +263,14 @@ export default function Header() {
 
             <Link
               href="/promocoes"
-              className="text-sm font-medium hover:text-primary"
+              className="text-sm font-medium hover:text-gray-200"
               onClick={scrollToTop}
             >
               Promoções
             </Link>
             <Link
               href="/lancamentos"
-              className="text-sm font-medium hover:text-primary"
+              className="text-sm font-medium hover:text-gray-200"
               onClick={scrollToTop}
             >
               Lançamentos

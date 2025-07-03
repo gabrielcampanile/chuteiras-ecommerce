@@ -50,98 +50,98 @@ export default function LancamentosPage() {
         {loading ? (
           <div className="text-center py-12">Carregando lançamentos...</div>
         ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow group border"
-            >
-              <div className="relative p-4">
-                <Badge className="absolute top-2 left-2 z-10 bg-gradient-to-r from-purple-500 to-blue-500">
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  Novo
-                </Badge>
+              <div
+                key={product.id}
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow group border"
+              >
+                <div className="relative p-4">
+                  <Badge className="absolute top-2 left-2 z-10 bg-gradient-to-r from-purple-500 to-blue-500">
+                    <Sparkles className="h-3 w-3 mr-1" />
+                    Novo
+                  </Badge>
 
-                <Link href={`/produto/${product.id}`}>
-                  <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
-                    <Image
+                  <Link href={`/produto/${product.id}`}>
+                    <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
+                      <Image
                         src={product.images?.[0] || "/placeholder.svg"}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                </Link>
+                        alt={product.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  </Link>
 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="text-xs">
-                      {product.category}
-                    </Badge>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="text-xs">
+                        {product.category}
+                      </Badge>
                       <span className="text-xs text-gray-500">
                         {product.brand}
                       </span>
-                  </div>
+                    </div>
 
-                  <Link href={`/produto/${product.id}`}>
-                    <h3 className="font-semibold text-sm hover:text-primary transition-colors line-clamp-2">
-                      {product.name}
-                    </h3>
-                  </Link>
+                    <Link href={`/produto/${product.id}`}>
+                      <h3 className="font-semibold text-sm hover:text-primary transition-colors line-clamp-2">
+                        {product.name}
+                      </h3>
+                    </Link>
 
                     <p className="text-xs text-gray-600 line-clamp-2">
                       {product.description}
                     </p>
 
-                  <div className="flex items-center gap-1">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-3 w-3 ${
+                    <div className="flex items-center gap-1">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-3 w-3 ${
                               i < Math.floor(product.rating || 0)
                                 ? "text-yellow-400 fill-current"
                                 : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
+                            }`}
+                          />
+                        ))}
+                      </div>
                       <span className="text-xs text-gray-500">
                         ({product.reviewCount || 0})
                       </span>
-                  </div>
+                    </div>
 
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-lg text-primary">
-                        R$ {product.price.toFixed(2).replace(".", ",")}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-gray-500 line-through">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-lg text-primary">
+                          R$ {product.price.toFixed(2).replace(".", ",")}
+                        </span>
+                        {product.originalPrice && (
+                          <span className="text-sm text-gray-500 line-through">
                             R${" "}
                             {product.originalPrice.toFixed(2).replace(".", ",")}
-                        </span>
-                      )}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
                     {product.createdAt && (
-                  <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500">
                         Lançado em{" "}
                         {new Date(product.createdAt).toLocaleDateString(
                           "pt-BR"
                         )}
-                  </div>
+                      </div>
                     )}
 
-                  <Button className="w-full mt-4" size="sm">
-                    Ver Lançamento
-                  </Button>
+                    <Button className="w-full mt-4" size="sm">
+                      Ver Lançamento
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
         )}
       </div>
 
