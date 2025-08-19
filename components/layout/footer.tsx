@@ -94,7 +94,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/produtos?categoria=futsal"
+                  href="/futsal"
                   className="text-gray-400 hover:text-white transition-colors"
                   onClick={scrollToTop}
                 >
@@ -103,7 +103,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/produtos?categoria=society"
+                  href="/society"
                   className="text-gray-400 hover:text-white transition-colors"
                   onClick={scrollToTop}
                 >
@@ -112,7 +112,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/produtos?categoria=campo"
+                  href="/campo"
                   className="text-gray-400 hover:text-white transition-colors"
                   onClick={scrollToTop}
                 >

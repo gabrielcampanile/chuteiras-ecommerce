@@ -30,6 +30,8 @@ export class ProductService {
     lastDoc?: QueryDocumentSnapshot<DocumentData>
   ): Promise<{ products: Product[]; lastDoc: QueryDocumentSnapshot<DocumentData> | null }> {
     try {
+
+
       let q = query(
         collection(db, PRODUCTS_COLLECTION),
         where('status', '==', 'active')
@@ -39,10 +41,26 @@ export class ProductService {
       let appliedInequality: 'price' | 'sizes' | 'colors' | null = null;
       if (filters) {
         if (filters.category) {
-          q = query(q, where('category', '==', filters.category));
+          if (Array.isArray(filters.category)) {
+            if (filters.category.length === 1) {
+              q = query(q, where('category', '==', filters.category[0]));
+            } else if (filters.category.length > 1) {
+              q = query(q, where('category', 'in', filters.category));
+            }
+          } else {
+            q = query(q, where('category', '==', filters.category));
+          }
         }
         if (filters.brand) {
-          q = query(q, where('brand', '==', filters.brand));
+          if (Array.isArray(filters.brand)) {
+            if (filters.brand.length === 1) {
+              q = query(q, where('brand', '==', filters.brand[0]));
+            } else if (filters.brand.length > 1) {
+              q = query(q, where('brand', 'in', filters.brand));
+            }
+          } else {
+            q = query(q, where('brand', '==', filters.brand));
+          }
         }
         if (filters.inStock !== undefined) {
           q = query(q, where('inStock', '==', filters.inStock));
@@ -86,6 +104,8 @@ export class ProductService {
       const querySnapshot = await getDocs(q);
       let products: Product[] = [];
 
+
+
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         products.push({
@@ -95,6 +115,21 @@ export class ProductService {
           updatedAt: data.updatedAt?.toDate() || new Date(),
         } as Product);
       });
+
+
+
+      // Aplicar busca no frontend se necessário
+      if (filters?.search) {
+        const searchTerm = filters.search.toLowerCase();
+        products = products.filter((product) =>
+          product.name.toLowerCase().includes(searchTerm) ||
+          product.brand.toLowerCase().includes(searchTerm) ||
+          product.category.toLowerCase().includes(searchTerm) ||
+          (product.tags && product.tags.some((tag: string) =>
+            tag.toLowerCase().includes(searchTerm)
+          ))
+        );
+      }
 
       const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1] || null;
 

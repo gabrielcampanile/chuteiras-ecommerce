@@ -8,7 +8,7 @@ const categories = [
     description: "Chuteiras para quadra com máxima aderência",
     image:
       "https://brand.assets.adidas.com/image/upload/f_auto,q_auto:best,fl_lossy/global_main_pack_1_pure_victory_football_ss25_launch_plp_statement_card_4in_d_a2aec953c6.jpg",
-    href: "/produtos?categoria=futsal",
+    href: "/futsal",
     features: ["Sola de borracha", "Máxima aderência", "Conforto superior"],
   },
   {
@@ -16,7 +16,7 @@ const categories = [
     description: "Perfeitas para grama sintética",
     image:
       "https://brand.assets.adidas.com/image/upload/f_auto,q_auto:best,fl_lossy/global_main_pack_1_pure_victory_football_ss25_launch_plp_statement_card_2tf_d_e7c204e02b.jpg",
-    href: "/produtos?categoria=society",
+    href: "/society",
     features: ["Travas baixas", "Estabilidade", "Durabilidade"],
   },
   {
@@ -24,7 +24,7 @@ const categories = [
     description: "Para grama natural e máximo desempenho",
     image:
       "https://brand.assets.adidas.com/image/upload/f_auto,q_auto:best,fl_lossy/global_main_pack_1_pure_victory_football_ss25_launch_plp_statement_card_1fg_d_992232ca56.jpg",
-    href: "/produtos?categoria=campo",
+    href: "/campo",
     features: ["Travas altas", "Tração superior", "Tecnologia avançada"],
   },
 ];

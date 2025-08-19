@@ -27,16 +27,16 @@ export default function Header() {
   const { user, userProfile, logout, loading } = useAuth();
 
   const categories = [
-    { name: "Futsal", href: "/produtos?categoria=futsal" },
-    { name: "Society", href: "/produtos?categoria=society" },
-    { name: "Campo", href: "/produtos?categoria=campo" },
+    { name: "Futsal", href: "/futsal" },
+    { name: "Society", href: "/society" },
+    { name: "Campo", href: "/campo" },
   ];
 
   const brands = [
-    { name: "Nike", href: "/produtos?marca=nike" },
-    { name: "Adidas", href: "/produtos?marca=adidas" },
-    { name: "Puma", href: "/produtos?marca=puma" },
-    { name: "Mizuno", href: "/produtos?marca=mizuno" },
+    { name: "Nike", href: "/nike" },
+    { name: "Adidas", href: "/adidas" },
+    { name: "Puma", href: "/puma" },
+    { name: "Mizuno", href: "/mizuno" },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -44,6 +44,10 @@ export default function Header() {
     if (searchQuery.trim()) {
       router.push(`/produtos?busca=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
+      // Forçar recarregamento da página para refletir a nova busca
+      window.location.href = `/produtos?busca=${encodeURIComponent(
+        searchQuery.trim()
+      )}`;
     }
   };
 

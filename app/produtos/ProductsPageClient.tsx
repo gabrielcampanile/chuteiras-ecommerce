@@ -40,7 +40,7 @@ function ProductsPageSkeleton() {
 
 export default function ProductsPageClient() {
   const { filters, setFilter, sort, setSort, clearFilters } = useProductFilters(
-    []
+    [] // Array vazio porque não precisamos filtrar produtos no frontend
   );
 
   const sortMap: Record<
@@ -58,16 +58,41 @@ export default function ProductsPageClient() {
     newest: { field: "createdAt", direction: "desc" },
     relevance: { field: "createdAt", direction: "desc" },
   };
-  const sortObj = sortMap[sort] || sortMap["relevance"];
 
-  // Adaptar priceRange para o formato esperado pelo serviço
-  const adaptedFilters = {
-    ...filters,
-    priceRange: { min: filters.priceRange[0], max: filters.priceRange[1] },
+  // Converter filtros do frontend para o formato do backend
+  const backendFilters = {
+    category:
+      filters.categories.length === 1
+        ? filters.categories[0]
+        : filters.categories.length > 1
+        ? filters.categories
+        : undefined,
+    brand:
+      filters.brands.length === 1
+        ? filters.brands[0]
+        : filters.brands.length > 1
+        ? filters.brands
+        : undefined,
+    search: filters.search || undefined,
+    priceRange:
+      filters.priceRange[0] > 0 || filters.priceRange[1] < 2000
+        ? { min: filters.priceRange[0], max: filters.priceRange[1] }
+        : undefined,
+    sizes: filters.sizes.length > 0 ? filters.sizes : undefined,
+    colors: filters.colors.length > 0 ? filters.colors : undefined,
   };
 
+  // Remover propriedades undefined
+  Object.keys(backendFilters).forEach((key) => {
+    if (backendFilters[key] === undefined) {
+      delete backendFilters[key];
+    }
+  });
+
+  const sortObj = sortMap[sort] || sortMap["relevance"];
+
   const { products, loading, error, hasMore, loadMore } = useProducts(
-    adaptedFilters,
+    backendFilters,
     sortObj
   );
 

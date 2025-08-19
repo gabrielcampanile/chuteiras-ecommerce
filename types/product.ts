@@ -52,8 +52,9 @@ export interface ProductReview {
 }
 
 export interface ProductFilter {
-  category?: string;
-  brand?: string;
+  category?: string | string[];
+  brand?: string | string[];
+  search?: string;
   priceRange?: {
     min: number;
     max: number;

@@ -50,24 +50,22 @@ export function useProductFilters(products: Product[]) {
 
   products = Array.isArray(products) ? products : [];
 
-  // Initialize filters from URL params only once
+  // Initialize filters from URL params
   useEffect(() => {
-    if (!isInitializedRef.current) {
-      const initialFilters: FilterState = {
-        categories: searchParams.getAll("categoria"),
-        brands: searchParams.getAll("marca"),
-        sizes: searchParams.getAll("tamanho"),
-        colors: searchParams.getAll("cor"),
-        priceRange: [
-          Number.parseInt(searchParams.get("precoMin") || "0"),
-          Number.parseInt(searchParams.get("precoMax") || "2000"),
-        ],
-        search: searchParams.get("busca") || "",
-        sort: searchParams.get("ordenacao") || "relevance",
-      };
-      setFilters(initialFilters);
-      isInitializedRef.current = true;
-    }
+    const initialFilters: FilterState = {
+      categories: searchParams.getAll("categoria"),
+      brands: searchParams.getAll("marca"),
+      sizes: searchParams.getAll("tamanho"),
+      colors: searchParams.getAll("cor"),
+      priceRange: [
+        Number.parseInt(searchParams.get("precoMin") || "0"),
+        Number.parseInt(searchParams.get("precoMax") || "2000"),
+      ],
+      search: searchParams.get("busca") || "",
+      sort: searchParams.get("ordenacao") || "relevance",
+    };
+    setFilters(initialFilters);
+    isInitializedRef.current = true;
   }, [searchParams]);
 
   // Stable update filter function
