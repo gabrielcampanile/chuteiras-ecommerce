@@ -195,7 +195,7 @@ export default function CartSidebar() {
                   asChild
                 >
                   {/* <Link href="/carrinho">Ver Carrinho Completo</Link> */}
-                  <Link href="/checkout">Finalizar Compra</Link>
+                  <Link href="/carrinho">Finalizar Compra</Link>
                 </Button>
               </div>
 
