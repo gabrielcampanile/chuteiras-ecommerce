@@ -166,7 +166,7 @@ export default function Header() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/login" onClick={scrollToTop}>
+                      <Link href="/cadastro" onClick={scrollToTop}>
                         Cadastrar
                       </Link>
                     </DropdownMenuItem>

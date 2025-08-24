@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { updateUserProfile, getUserProfile } from "@/lib/services/userService";
 
 export default function MinhaContaPage() {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, loading } = useAuth();
   const [nome, setNome] = useState("");
   const [numero, setNumero] = useState("");
   const [endereco, setEndereco] = useState("");
@@ -49,6 +49,10 @@ export default function MinhaContaPage() {
     try {
       await updateUserProfile(user.uid, { name: nome, numero, endereco });
       setFormSuccess("Dados atualizados com sucesso!");
+      // Redirecionar para página inicial após 2 segundos para mostrar a mensagem de sucesso
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
     } catch (err) {
       setFormError("Erro ao salvar dados. Tente novamente.");
     }
@@ -81,6 +85,9 @@ export default function MinhaContaPage() {
         {formSuccess && (
           <div className="text-green-600 text-sm text-center">
             {formSuccess}
+            <p className="text-gray-500 text-xs mt-1">
+              Redirecionando para página inicial...
+            </p>
           </div>
         )}
         <div className="space-y-2">
@@ -107,8 +114,8 @@ export default function MinhaContaPage() {
           />
           <Input type="email" placeholder="E-mail" value={email} disabled />
         </div>
-        <Button type="submit" className="w-full">
-          Salvar Dados
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Salvando..." : "Salvar Dados"}
         </Button>
         {/* <div className="border-t pt-4 mt-4">
           <h3 className="font-semibold mb-2 text-center">Trocar Senha</h3>

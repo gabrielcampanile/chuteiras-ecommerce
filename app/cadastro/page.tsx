@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function LoginPage() {
-  const { login, user, loading, error, clearError } = useAuth();
+export default function CadastroPage() {
+  const { register, user, loading, error, clearError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<{
@@ -34,6 +35,17 @@ export default function LoginPage() {
 
     if (!password) {
       errors.password = "Senha é obrigatória";
+    } else if (password.length < 6) {
+      errors.password = "A senha deve ter pelo menos 6 dígitos";
+    } else if (!/^\d{6,}$/.test(password)) {
+      errors.password =
+        "A senha deve conter apenas números e ter pelo menos 6 dígitos";
+    }
+
+    if (!confirmPassword) {
+      errors.confirmPassword = "Confirmação de senha é obrigatória";
+    } else if (password !== confirmPassword) {
+      errors.confirmPassword = "As senhas não coincidem";
     }
 
     setValidationErrors(errors);
@@ -46,65 +58,22 @@ export default function LoginPage() {
     setFormSuccess(null);
     setValidationErrors({});
 
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      await login(email, password);
+      await register(email, password);
       setFormSuccess(
-        "Login realizado com sucesso! Redirecionando para página inicial..."
+        "Conta criada com sucesso! Redirecionando para página inicial..."
       );
       // Redirecionar para página inicial após 2 segundos para mostrar a mensagem de sucesso
       setTimeout(() => {
         router.push("/");
       }, 2000);
-    } catch (err: any) {
-      console.log("Erro no login:", err);
-      // Verificar se é erro de usuário não encontrado e redirecionar para cadastro
-      if (err.code === "auth/user-not-found") {
-        console.log("Usuário não encontrado, redirecionando para cadastro");
-        setFormError(
-          "Usuário não encontrado. Redirecionando para página de cadastro..."
-        );
-        setTimeout(() => {
-          router.push("/cadastro");
-        }, 1500);
-        return;
-      }
-      if (
-        err.code === "auth/invalid-credential" ||
-        err.code === "auth/user-disabled"
-      ) {
-        console.log(
-          "Credenciais inválidas ou usuário desabilitado, redirecionando para cadastro"
-        );
-        setFormError(
-          "Credenciais inválidas. Redirecionando para página de cadastro..."
-        );
-        setTimeout(() => {
-          router.push("/cadastro");
-        }, 1500);
-        return;
-      }
-      // Para outros erros, o provider já tratou
+    } catch (err) {
+      setFormError("Erro ao criar conta. Tente novamente.");
     }
-
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setFormError(null);
-      setValidationErrors({});
-
-      if (!validateForm()) {
-        return;
-      }
-
-      try {
-        console.log("Tentando fazer login para:", email);
-        await login(email, password);
-        console.log("Login realizado com sucesso!");
-        // Não redirecionar automaticamente - deixar o useEffect do provider fazer isso
-      } catch (err: any) {
-        console.log("Erro no login:", err);
-        // O erro já foi tratado pelo provider
-      }
-    };
   };
 
   if (user) {
@@ -115,51 +84,31 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md space-y-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">Entrar na sua conta</h2>
+          <h2 className="text-2xl font-bold mb-2">Criar nova conta</h2>
           <p className="text-gray-600 text-sm">
-            Digite suas credenciais para acessar sua conta
+            Preencha os dados abaixo para criar sua conta
           </p>
         </div>
 
-        {formError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
-            {formError}
-            {formError.includes("Usuário não encontrado") && (
-              <div className="mt-2">
-                <Link
-                  href="/cadastro"
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  Clique aqui para criar uma conta
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
-            {error}
-            {error.includes("Usuário não encontrado") && (
-              <div className="mt-2">
-                <Link
-                  href="/cadastro"
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  Clique aqui para criar uma conta
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
-
-        {formSuccess && (
-          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded text-sm">
-            {formSuccess}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
+          {formError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
+              {formError}
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
+              {error}
+            </div>
+          )}
+
+          {formSuccess && (
+            <div className="text-green-600 text-sm text-center">
+              {formSuccess}
+            </div>
+          )}
+
           <div>
             <Input
               type="email"
@@ -183,7 +132,7 @@ export default function LoginPage() {
           <div>
             <Input
               type="password"
-              placeholder="Senha"
+              placeholder="Senha (6 dígitos numéricos)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={
@@ -197,21 +146,43 @@ export default function LoginPage() {
                 {validationErrors.password}
               </p>
             )}
+            <p className="text-gray-500 text-xs mt-1">
+              A senha deve conter apenas números e ter pelo menos 6 dígitos
+            </p>
+          </div>
+
+          <div>
+            <Input
+              type="password"
+              placeholder="Confirme a senha"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={
+                validationErrors.confirmPassword
+                  ? "border-red-500 focus:border-red-500"
+                  : ""
+              }
+            />
+            {validationErrors.confirmPassword && (
+              <p className="text-red-600 text-xs mt-1">
+                {validationErrors.confirmPassword}
+              </p>
+            )}
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Entrando..." : "Entrar"}
+            {loading ? "Criando conta..." : "Criar conta"}
           </Button>
         </form>
 
         <div className="text-center">
           <p className="text-gray-600 text-sm">
-            Não tem uma conta?{" "}
+            Já tem uma conta?{" "}
             <Link
-              href="/cadastro"
+              href="/login"
               className="text-blue-600 hover:underline font-medium"
             >
-              Cadastre-se
+              Faça login
             </Link>
           </p>
         </div>
